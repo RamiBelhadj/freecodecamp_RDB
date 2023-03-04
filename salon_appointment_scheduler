@@ -1,0 +1,29 @@
+CREATE DATABASE salon;
+\c salon;
+
+CREATE TABLE customers();
+
+CREATE TABLE appointments();
+
+CREATE TABLE services();
+
+ALTER TABLE customers add column customer_id SERIAL PRIMARY KEY; 
+ALTER TABLE appointments add column appointment_id SERIAL PRIMARY KEY; 
+ALTER TABLE services add column service_id SERIAL PRIMARY KEY; 
+
+ALTER TABLE appointments ADD column customer_id INT references customers(customer_id);
+ALTER TABLE appointments ADD column service_id INT references services(service_id);
+
+ALTER TABLE customers ADD column phone VARCHAR(50) UNIQUE; 
+
+ALTER TABLE customers ADD column name VARCHAR(50) UNIQUE; 
+ALTER TABLE services ADD column name VARCHAR(50) UNIQUE; 
+ALTER TABLE appointments ADD column time VARCHAR(50); 
+
+INSERT INTO services(name) VALUES ("service_1");
+INSERT INTO services(name) VALUES ("service_2");
+INSERT INTO services(name) VALUES ("service_3");
+
+
+
+chmod +c salon.sh
