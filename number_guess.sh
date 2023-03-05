@@ -1,7 +1,8 @@
 #!/bin/bash
+PSQL="psql --username=freecodecamp --dbname=number_guess -t --no-align -c"
 
 NUMBER=$(($RANDOM%1000+1))
-
+echo $NUMBER
 USERNAME_F(){
     echo -e "\nEnter your username:"
     read USERNAME 
@@ -13,7 +14,10 @@ USERNAME_F(){
         echo -e "\nWelcome, $USERNAME! It looks like this is your first time here."
     else 
         READ_USER=$($PSQL "SELECT username, games_played, best_game from users WHERE username='$USERNAME'")
+        echo $READ_USER | while IFS="|" read USERNAME GAMES_PLAYED BEST_GAME
+        do
         echo -e "\nWelcome back, $USERNAME! You have played $GAMES_PLAYED games, and your best game took $BEST_GAME guesses."
+        done
     fi
     GUESSING_NUMBER
 }
@@ -44,5 +48,6 @@ GUESSING_NUMBER(){
 
 INSERT_DATA(){
     USER_ID=$($PSQL "SELECT id from users where username = '$USERNAME'")
-    INSERT_NEW_GAME=$($PSQL "UPDATE users SET games_played=games_played+1, LEAST(best_game, $NUMBER_OF_GUESSES) WHERE id = $USER_ID")
+    INSERT_NEW_GAME=$($PSQL "UPDATE users SET games_played=games_played+1, best_game=LEAST(best_game, $NUMBER_OF_GUESSES) WHERE id = $USER_ID")
 }
+USERNAME_F
