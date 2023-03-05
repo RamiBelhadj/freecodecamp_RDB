@@ -14,7 +14,8 @@ MAIN_MENU(){
     fi
 
     AVAILABLE_SERVICE=$($PSQL "SELECT service_id, name from services ORDER BY service_id")
-    if [[ -z $AVAILABLE_SERVICE]]
+    
+    if [[ -z $AVAILABLE_SERVICE ]]
     then 
     echo "Sorry, we don't have any service available right now" 
     else 
@@ -22,13 +23,14 @@ MAIN_MENU(){
         do 
             echo "$SERVICE_ID) $NAME"
         done 
-        read SERVICE_ID 
-        if [[ ! $SERVICE_ID  =~ ^[0-9]+$]]
+        read SERVICE_ID_SELECTED 
+        if [[ ! $SERVICE_ID  =~ ^[0-9]+$ ]]
         then 
             MAIN_MENU "THAT is not a number" 
         else 
-            SERV_AVAIL = $($PSQL "SELECT service_id from services where service_id = $SERVICE_ID")
-            NAME_SERV = $($PSQL "SELECT name from services where service_id = $SERVICE_ID")
+            
+            SERV_AVAIL=$($PSQL "SELECT service_id from services where service_id = $SERVICE_ID_SELECTED")
+            NAME_SERV=$($PSQL "SELECT name from services where service_id = $SERVICE_ID_SELECTED")
             if [[ -z $SERV_AVAIL ]]
             then 
                 MAIN_MENU "I could not find that service. what would you loke today?"
@@ -47,7 +49,7 @@ MAIN_MENU(){
                 CUSTOMER_ID=$($PSQL "SELECT customer_id from customers WHERE phone='$CUSTOMER_PHONE'")
                 if [[ $SERVICE_TIME ]]
                 then 
-                    INSERT_SERV_RESULT=$($PSQL "INSERT INTO appointments(customer_id, service_id, time) VALUES('$CUSTOMER_ID','$SERVICE_ID','$SERVICE_TIME')")
+                    INSERT_SERV_RESULT=$($PSQL "INSERT INTO appointments(customer_id, service_id, time) VALUES('$CUSTOMER_ID','$SERVICE_ID_SELECTED','$SERVICE_TIME')")
                     if [[ $INSERT_SERV_RESULT ]]
                     then 
                         echo -e "\nI have put you down for a $NAME_SERV at $SERVICE_TIME, $(echo $CUSTOMER_NAME | sed -r 's/^ *| *$//g')."
